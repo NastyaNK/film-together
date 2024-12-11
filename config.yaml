@@ -1,0 +1,10 @@
+server:
+  host: localhost
+  port: 8080
+
+database:
+  host: localhost
+  port: 5432
+  name:  vk
+  user: anastasia
+  password: 2553
