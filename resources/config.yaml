@@ -3,8 +3,8 @@ server:
   port: 8080
 
 database:
-  host: localhost
+  host: postgres
   port: 5432
-  name:  vk
+  name: vk
   user: anastasia
   password: 2553

@@ -1,7 +1,3 @@
-FROM ubuntu:22.04 AS builder
-LABEL authors="anastasia"
-
-
 FROM golang:1.21.1-alpine AS builder
 
 WORKDIR /app
@@ -13,7 +9,7 @@ FROM alpine:latest
 
 WORKDIR /app
 COPY --from=builder /app/myapp .
-COPY --from=builder /app/resources .
+COPY --from=builder /app/resources /app/resources
 
 RUN adduser -D myuser
 USER myuser
