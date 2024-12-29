@@ -72,7 +72,7 @@ func connectToDatabase(config Dd) (*sql.DB, error) {
 }
 
 func main() {
-	config, err := loadConfig("config.yaml")
+	config, err := loadConfig("resources/config.yaml")
 	if err != nil {
 		fmt.Println("Error loading config:", err)
 		return

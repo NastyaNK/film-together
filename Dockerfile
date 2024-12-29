@@ -4,26 +4,18 @@ LABEL authors="anastasia"
 
 FROM golang:1.21.1-alpine AS builder
 
-WORKDIR /root/
-
-COPY go.mod go.sum ./
-
-RUN go mod download
-
+WORKDIR /app
 COPY . .
 
-RUN GOOS=linux GOARCH=amd64 go build -o myapp .
-
-RUN chmod +x /root/myapp
+RUN go build -o myapp .
 
 FROM alpine:latest
 
-COPY --from=builder /root/myapp /root/myapp
+WORKDIR /app
+COPY --from=builder /app/myapp .
+COPY --from=builder /app/resources .
 
 RUN adduser -D myuser
 USER myuser
 
-# Запускаем приложение
-ENTRYPOINT ["/root/myapp"]
-
-
+ENTRYPOINT ["./myapp"]
