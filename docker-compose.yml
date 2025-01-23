@@ -1,13 +1,19 @@
-version: "3.1"
+version: "3.1" // используемая версия
 
-services:
+services: //
 
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: anastasia
-      POSTGRES_DB: vk
-      POSTGRES_PASSWORD: 2553
-    ports:
-      - "5432:5432"
+  app: // первый файл
+    build: // инструкция для сборки
+      dockerfile: Dockerfile // тут инструкция для соборки
+    depends_on: //
+      - postgres //
+
+  postgres: // имя второго файла
+    image: postgres //берем готовый образ
+    restart: always //при ошибки всегда заново перезапускать
+    environment: //
+      POSTGRES_USER: anastasia //
+      POSTGRES_DB: vk //
+      POSTGRES_PASSWORD: 2553 //
+    ports: //
+      - "5432:5432" //
