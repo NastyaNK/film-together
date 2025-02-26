@@ -1,0 +1,10 @@
+### AddFilm
+
+POST localhost:9893/createRoom
+Content-Type: application/json
+
+{
+  "id_film": 1,
+  "name": "первая",
+  "is_public": true
+}

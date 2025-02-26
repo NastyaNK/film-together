@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"gopkg.in/yaml.v3"
+	"io"
 	"net/http"
 	"os"
 )
@@ -94,4 +95,5 @@ func main() {
 	if err := http.ListenAndServe(address, nil); err != nil {
 		fmt.Println("Error starting server:", err)
 	}
+	data, err := io.ReadAll()
 }
