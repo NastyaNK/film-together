@@ -4,10 +4,10 @@ import (
 	"errors"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	. "m/model"
+	. "m/pkg/model"
 )
 
-func AddFilm(db *sqlx.DB, film Film) error {
+func AddFilm(db *sqlx.DB, film *Film) error {
 
 	// Начинаем транзакцию
 	tx, err := db.Beginx()
@@ -15,7 +15,7 @@ func AddFilm(db *sqlx.DB, film Film) error {
 		return errors.New("ошибка начала транзакции: " + err.Error())
 	}
 
-	err = tx.QueryRowx("INSERT INTO film (name, year, plot, genre, rating, image) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", film.Id, film.Name, film.Year, film.Plot, film.Genre, film.Rating, film.Image).Scan(&film.Id)
+	err = tx.QueryRowx("INSERT INTO film (name, year, plot, genre, rating, image) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", film.Name, film.Year, film.Plot, film.Genre, film.Rating, film.Image).Scan(&film.Id)
 
 	if err != nil {
 		tx.Rollback() //если возникла ошибка в запросе откатываем все изменения
@@ -26,16 +26,16 @@ func AddFilm(db *sqlx.DB, film Film) error {
 	return tx.Commit()
 }
 
-func GetFilm(db *sqlx.DB, film Film) error {
+func GetFilm(db *sqlx.DB, id int) (Film, error) {
 	var result Film
-	err := db.Get(&result, "SELECT * FROM film WHERE id=$1", film.Id)
+	err := db.Get(&result, "SELECT * FROM film WHERE id=$1", id)
 	if err != nil {
-		return errors.New("ошибка получения фильма: " + err.Error())
+		return Film{}, errors.New("ошибка получения фильма: " + err.Error())
 	}
-	return err
+	return result, nil
 }
 
-func UpdateFilm(db *sqlx.DB, film Film) error {
+func UpdateFilm(db *sqlx.DB, film *Film) error {
 	tx, err := db.Beginx()
 	if err != nil {
 		return errors.New("ошибка начала транзакции: " + err.Error())
@@ -56,4 +56,9 @@ func DeleteFilm(db *sqlx.DB, film Film) error {
 		return errors.New("Удаление фильма не удалось " + err.Error())
 	}
 	return tx.Commit()
+}
+func GetAllFilms(db *sqlx.DB) ([]Film, error) {
+	var films []Film
+	err := db.Select(&films, "SELECT * FROM film")
+	return films, err
 }

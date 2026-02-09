@@ -1,17 +1,13 @@
-FROM golang:1.21.1-alpine AS builder //создание образа на основе линукса и версии языка
+FROM alpine:latest
 
-WORKDIR /app // папка в который все сохарним
-COPY . . // путь файла который переносим  и путь куда переносим
+WORKDIR /app
 
-RUN go build -o myapp . // строим и называем образ
+COPY ./dist/myapp .
+COPY ./resources .
+COPY ./config ./config
 
-FROM alpine:latest // создаем еще образ чтобы тут хранить все
+RUN adduser -D myuser
+USER myuser
 
-WORKDIR /app // работает в этой папке
-COPY --from=builder /app/myapp . // первый образ переносим в новый образ
-COPY --from=builder /app/resources /app/resources // и ресурсы тоже
-
-RUN adduser -D myuser //
-USER myuser //
-
-ENTRYPOINT ["./myapp"] //
+EXPOSE 8080
+ENTRYPOINT ["./myapp"]

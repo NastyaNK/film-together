@@ -1,12 +1,14 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "Использование: ./start.sh [up|down]"
+    echo "Использование: ./migrations.sh [up|down]"
     exit 1
 fi
 
-DB_URL="postgres://anastasia:2553@localhost:5432/postgres?sslmode=disable"
-MIGRATIONS_PATH="migrations"
+DB_URL="postgres://anastasia:2553@localhost:5433/postgres?sslmode=disable"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+MIGRATIONS_PATH="$SCRIPT_DIR/pkg/repository/migrations"
+
 
 case "$1" in
     up)
@@ -15,7 +17,7 @@ case "$1" in
         ;;
     down)
         echo "Откатываем миграции..."
-        migrate -database "$DB_URL" -path "$MIGRATIONS_PATH" down
+        migrate -database "$DB_URL" -path "$MIGRATIONS_PATH" down -all
         ;;
     *)
         echo "Неверный аргумент! Используйте './start.sh up' или './start.sh down'"

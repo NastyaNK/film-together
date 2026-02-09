@@ -1,19 +1,33 @@
-version: "3.1" // используемая версия
+version: "3.8"
 
-services: //
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: anastasia
+      POSTGRES_PASSWORD: 2553
+      POSTGRES_DB: vk
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U anastasia"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
 
-  app: // первый файл
-    build: // инструкция для сборки
-      dockerfile: Dockerfile // тут инструкция для соборки
-    depends_on: //
-      - postgres //
+  app:
+    image: film-together:local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      CONFIG_PATH: ./config/config.yaml
+    ports:
+      - "8080:8080"
+    command: ["./myapp"]
 
-  postgres: // имя второго файла
-    image: postgres //берем готовый образ
-    restart: always //при ошибки всегда заново перезапускать
-    environment: //
-      POSTGRES_USER: anastasia //
-      POSTGRES_DB: vk //
-      POSTGRES_PASSWORD: 2553 //
-    ports: //
-      - "5432:5432" //
+volumes:
+  pgdata:
