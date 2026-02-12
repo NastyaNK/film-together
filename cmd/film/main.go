@@ -1,16 +1,18 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"m/pkg/config"
 	"m/pkg/model"
 	"m/pkg/repository"
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
@@ -272,6 +274,60 @@ func deleteRoomHandler(db *sqlx.DB) http.HandlerFunc {
 	}
 }
 
+func importFilmsHandler(db *sqlx.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		file, _, err := r.FormFile("file")
+		if err != nil {
+			http.Error(w, "Не удалось получить файл: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		defer file.Close()
+		reader := csv.NewReader(file)
+		records, err := reader.ReadAll()
+		if err != nil {
+			http.Error(w, "Ошибка чтения CSV: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+		for i := 1; i < len(records); i++ {
+
+			record := records[i]
+
+			if len(record) < 7 {
+				continue
+			}
+
+			year, err := strconv.Atoi(record[1])
+			if err != nil {
+				return
+			}
+
+			rating, err := strconv.ParseFloat(record[4], 64)
+			if err != nil {
+				return
+			}
+
+			film := model.Film{
+				Name:     record[0],
+				Year:     year,
+				Plot:     record[2],
+				Genre:    record[3],
+				Rating:   rating,
+				Image:    record[5],
+				VideoURL: record[6],
+			}
+
+			err = repository.AddFilm(db, &film)
+			if err != nil {
+				return
+			}
+		}
+	}
+}
+
 func main() {
 	files, err := os.ReadDir(".") // текущая директория
 	if err != nil {
@@ -302,6 +358,12 @@ func main() {
 
 	http.HandleFunc("/ping", pingHandler)
 	http.HandleFunc("/version", versionHandler(db))
+	http.HandleFunc("/admin/import", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "config/templates/import.html")
+	})
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("config/static"))))
+	http.HandleFunc("/admin/import-films", importFilmsHandler(db))
+
 	http.HandleFunc("/admin/film", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:

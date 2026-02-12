@@ -6,5 +6,6 @@ CREATE TABLE film
     plot   TEXT,
     genre  VARCHAR(50),
     rating FLOAT,
-    image  TEXT
+    image  TEXT,
+    video_url TEXT
 );
