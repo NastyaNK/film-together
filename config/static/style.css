@@ -1,0 +1,64 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 40px;
+    background-color: #2d3250;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.container {
+    max-width: 600px;
+    height: 750px;
+    margin: auto;
+    background: #424769;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 32px;
+    color: white;
+    font-family: Keraleeyam, sans-serif;
+}
+
+.custom-file-label,
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 48px;
+    padding: 0 24px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    vertical-align: middle;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.custom-file-label {
+    background-color: #676F8D;
+    color: white;
+    border-left: 4px solid #ffb17a;
+    margin-right: 10px;
+}
+
+.custom-file-label:hover {
+    background-color: #5a5f78;
+}
+
+button {
+    background-color: #ffb17a;
+    border: none;
+    color: black;
+}
+
+button:hover {
+    background-color: #e6a76f;
+}

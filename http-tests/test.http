@@ -1,0 +1,86 @@
+### Ping
+
+GET http://localhost:8080/ping
+
+### AddFilm
+
+POST localhost:8080/createRoom
+Content-Type: application/json
+
+{
+  "id_film": 1,
+  "name": "первая",
+  "is_public": true
+}
+
+###
+
+GET http://localhost:8080/admin/film
+
+###
+
+GET http://localhost:8080/admin/film?id=1
+
+
+###
+
+POST http://localhost:8080/admin/film
+Content-Type: application/json
+
+{
+  "Name":"Матрица",
+  "Year":1999,
+  "Plot":"Что-то там",
+  "Genre":"какой-то",
+  "Rating":7,
+  "Image":"http:\\.."
+}
+
+###
+
+PATCH http://localhost:8080/admin/film
+Content-Type: application/json
+
+{
+  "Id":1,
+  "Name":"Какое-то",
+  "Year":1455,
+  "Plot":"Что-то",
+  "Genre":"Какой-то",
+  "Rating":5,
+  "Image":"http:\\.."
+}
+
+###
+
+DELETE http://localhost:8080/admin/film?id=3
+
+###
+POST http://localhost:8080/room
+Content-Type: application/json
+
+{
+  "name": "Первая комната",
+  "public": true,
+  "film_id": 1
+}
+
+###
+GET http://localhost:8080/room
+
+###
+GET http://localhost:8080/room?id=1
+
+###
+PATCH http://localhost:8080/room
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Комната переименована",
+  "public": false,
+  "film_id": 1
+}
+
+###
+DELETE http://localhost:8080/room?id=1

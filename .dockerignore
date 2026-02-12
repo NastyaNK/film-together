@@ -1,0 +1,7 @@
+.git
+*.go
+pkg/
+cmd/
+!.go.mod
+!.go.sum
+!myapp
